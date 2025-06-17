@@ -1,0 +1,79 @@
+import { useState } from 'react'
+
+import '../App.css'
+import { Video } from 'lucide-react';
+import { Bot } from 'lucide-react';
+import { Star } from 'lucide-react';
+import { Rocket } from 'lucide-react';
+function Navbar() {
+
+  return (
+    <>
+
+      <div className=" hidden md:flex bg-[#061B15] text-white w-48 md:w-80 h-screen flex-col overflow-auto font-bold">
+        {/* NAME AND LOGO */}
+        <div className='mt-6 gap-3 px-4 flex flex-row items-center'>
+          <div><img src='/logo.svg' /></div>
+          <div className='font-bold text-2xl'>Meet.AI</div>
+        </div>
+        {/* LINE */}
+        <div className='mt-4 h-1 bg-[#1D2E2A] mx-4'></div>
+        {/* MEETINGS TAB */}
+        <div className='mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24]'>
+          <div><Video color="white" size={30} /></div>
+          <div className=' font-normal text-lg'>Meetings</div>
+        </div>
+        {/* AGENTS TAB */}
+        <div className='mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24]'>
+          <div><Bot color="white" size={30} /></div>
+          <div className=' font-normal text-lg'>Agents</div>
+        </div>
+        {/* LINE */}
+        <div className='mt-8 h-1 bg-[#1D2E2A] mx-4'></div>
+        {/* UPGRADE TAB */}
+        <div className='p-2 mt-2 px-4 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24]'>
+          <div> <Star color="white" size={30} /></div>
+          <div className=' font-normal text-lg'>Upgrade</div>
+        </div>
+        <div className='grow'></div>
+        {/* BOX DOWN */}
+        <div className='flex flex-col p-6 mx-2 rounded-xl bg-[#1D2E2A] mb-2 gap-3'>
+          <div className='gap-3 flex flex-row items-center'>
+            <div><Rocket color="white" size={15} /></div>
+            <div className='font-normal text-lg'>Free Trial</div>
+          </div>
+          <div className='  font-normal text-sm'>
+            0/1 Agents
+          </div>
+          <div className=' h-2 bg-[#163F29] rounded-xl'></div>
+          <div className=' font-normal text-sm'>
+            0/3 Meetings
+          </div>
+          <div className=' h-2 bg-[#163F29] rounded-xl'></div>
+          {/* UPGRADE BUTTON */}
+          <div className="mt-4 -mx-6 -mb-6 hover:bg-[#2B3C38] transition-colors duration-200 cursor-pointer rounded-b-xl">
+            <div className="h-[1px] bg-[#2B3C38]"></div>
+            <div className="text-center py-3 text-base font-medium">Upgrade</div>
+          </div>
+        </div>
+        {/* EMAIL ID AND NAME BOX */}
+        <div className='flex flex-col p-6 mx-2 mb-2 rounded-xl bg-[#1D2E2A] '>
+          {/* AVATAR CIRCLE */}
+          <div className='flex flex-row gap-4'>
+              <div className='w-10 h-10 rounded-full bg-[#BFCA33] flex items-center justify-center'>HV</div>
+          {/* NAME AND EMAIL */}
+          <div className='flex flex-col justify-center'>
+              <div className='text-s font-normal'>Himanshi</div>
+              <div className='gap-6 text-xs font-normal'>himanshivarshney25@gmail.com</div>
+          </div>
+          </div>
+           
+
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default Navbar
+
