@@ -7,7 +7,8 @@ import { CircleCheck } from 'lucide-react';
 import { Video } from 'lucide-react';
 import { Loader } from 'lucide-react';
 import { CircleX } from 'lucide-react';
-function Modal({ showModal, setShowModal }) {
+import { ChevronsUpDown } from 'lucide-react'
+function Modal({ fromAgents,showModal, setShowModal }) {
 
     return (
         <>
@@ -16,35 +17,38 @@ function Modal({ showModal, setShowModal }) {
                 <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
                     <div className='flex flex-col overflow-auto w-[600px] h-104 bg-[#FFFFFF] rounded-xl gap-4 mx-10 p-4 cursor-pointer'>
                         <div className='flex flex-row items-center'>
-                            <div className='text-lg font-black w-full'>New Meeting</div>
+                            <div className='text-lg font-black w-full'>{ fromAgents ?"New Agent" : "New Meeting"}</div>
                             <div onClick={()=>setShowModal(false)} className='cursor-pointer ml-auto'>
                                 <X size={20} color='black' />
                             </div>
                         </div>
-                        <div className='text-s font-extralight'>Create a new meeting</div>
+                        <div className='text-s font-extralight'>{fromAgents ?"Create a new agent" :"Create a new meeting"}</div>
                         <div>Name</div>
                         <div className='p-2 w-full h-10 gap-2 bg-[#FFFFFF] flex items-center rounded-xl box-border size-32 border-2 border-gray-300  focus-within:border-gray-400 focus-within:border-3 focus-within:scale-105 transition-all duration-200'>
                             <input
                                 type='text'
-                                placeholder='eg Math Consultations..'
+                                placeholder={fromAgents ?'eg Math tutor':'eg Math consultations..'}
                                 className='outline-none w-full text-sm'>
                             </input>
                         </div>
-                        <div className=''>Agent </div>
+                        <div> {fromAgents?"Instructions":"Agent"} </div>
                         <div className='p-2 w-full h-10 gap-2 bg-[#FFFFFF] flex items-center rounded-xl box-border border-2 border-gray-300  focus-within:border-gray-400 focus-within:border-3 focus-within:scale-105 transition-all duration-200'>
                             <input
                                 type='text'
-                                placeholder='eg Math Consultations..'
+                                placeholder={fromAgents?'You are a helpful math assistant that can answer questions and help tutor':'eg Math Consultations..'}
                                 className='outline-none w-full text-sm'>
                             </input>
+                            <ChevronsUpDown size={20} color='black'/>
                         </div>
-                        <div className='flex justify-center'>Not found what you are looking for? Create new agent</div>
-                        <div className='flex flex-row justify-around'>
-                            <div onClick={() => setShowModal(false)} className=" w-32 h-10  bg-[#FFFFFF] flex items-center justify-around rounded-xl box-border  border-2 border-gray-300  hover:bg-[#F5F5F5] cursor-pointer">
-                                <div className='font-extralight text-s'>Cancel</div>
+                       { !fromAgents &&
+                        <div className='flex justify-center'>Not found what you are looking for? <span className='text-green-700 hover:underline'> Create a new agent</span></div>
+                       }
+                        <div className='flex flex-row justify-between'>
+                            <div onClick={() => setShowModal(false)} className=" w-24 h-10  bg-[#FFFFFF] flex items-center justify-around rounded-xl hover:bg-[#F5F5F5] cursor-pointer">
+                                <div className='font-normal text-s'>Cancel</div>
                             </div>
-                            <div className="w-32 h-10  bg-green-700 flex items-center justify-around rounded-xl box-border  border-2 border-gray-300  hover:bg-green-600 cursor-pointer">
-                                <div className='font-extralight text-white'>Create</div>
+                            <div className="w-24 h-10  bg-green-700 flex items-center justify-around rounded-xl  hover:bg-green-600 cursor-pointer">
+                                <div className=' text-white font-normal '>Create</div>
                             </div>
                         </div>
                     </div>

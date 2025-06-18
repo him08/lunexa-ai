@@ -6,7 +6,7 @@ import { ChevronsUpDown } from 'lucide-react'
 import Footer from './Footer'
 
 function Dashboard({fromAgents,setShowModal}) {
-    const [count, setCount] = useState(0)
+    const [count, setCount] = useState(0);
 
     return (
         <>

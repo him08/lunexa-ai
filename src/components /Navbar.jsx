@@ -5,12 +5,15 @@ import { Video } from 'lucide-react';
 import { Bot } from 'lucide-react';
 import { Star } from 'lucide-react';
 import { Rocket } from 'lucide-react';
-function Navbar({setSelected,selected,showSideBar}) {
+function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
 
   return (
     <>
+    
      { showSideBar &&
-      <div className=" hidden md:flex bg-[#061B15] text-white w-48 md:w-80 h-screen flex-col overflow-auto font-bold">
+       <div className="fixed md:relative inset-0 z-50 flex items-center justify-center backdrop-opacity-60 bg-black/30">
+      <div className={`flex bg-[#061B15]  text-white w-75 md:w-80 h-screen flex-col font-bold fixed top-0 left-0 z-50 md:relative md:z-auto`}>
+
         {/* NAME AND LOGO */}
         <div className='mt-6 gap-3 px-4 flex flex-row items-center'>
           <div><img src='/logo.svg' /></div>
@@ -24,7 +27,7 @@ function Navbar({setSelected,selected,showSideBar}) {
           <div className=' font-normal text-lg'>Meetings</div>
         </div>
         {/* AGENTS TAB */}
-        <div onClick={() => setSelected("Agents")} className={`mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24] ${selected === "Agents" ? "bg-[#092E24]" : "bg-[#061B15]"} `}>
+        <div onClick={() => setSelected("Agents")} className={`mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24] ${selected === "Agents" ? "bg-[#092E24]" : "bg-[#061B15]"}` }>
           <div><Bot color="white" size={30} /></div>
           <div className=' font-normal text-lg'>Agents</div>
         </div>
@@ -67,15 +70,12 @@ function Navbar({setSelected,selected,showSideBar}) {
               <div className='gap-6 text-xs font-normal'>himanshivarshney25@gmail.com</div>
           </div>
           </div>
-           
-
         </div>
+      </div>
       </div>
 }
     </>
-     
   )
 }
 
 export default Navbar
-
