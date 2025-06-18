@@ -1,0 +1,24 @@
+{
+  "name": "lunexa-ai",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/him08/lunexa-ai.git"
+  },
+  "author": "Himanshi Varshney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/him08/lunexa-ai/issues"
+  },
+  "homepage": "https://github.com/him08/lunexa-ai#readme",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
