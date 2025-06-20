@@ -1,4 +1,5 @@
-import { use, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import '../App.css'
 import { Video } from 'lucide-react';
@@ -6,7 +7,7 @@ import { Bot } from 'lucide-react';
 import { Star } from 'lucide-react';
 import { Rocket } from 'lucide-react';
 function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
-
+  const navigate = useNavigate();
   return (
     <>
     
@@ -22,12 +23,12 @@ function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
         {/* LINE */}
         <div className='mt-4 h-1 bg-[#1D2E2A] mx-4'></div>
         {/* MEETINGS TAB */}
-        <div onClick={() => setSelected("Meetings")} className= {`mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24] ${selected==="Meetings" ? "bg-[#092E24]" : "bg-[#061B15]"}`}>
+        <div onClick={() => {setSelected("Meetings");navigate("/meetings");}} className= {`mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24] ${selected==="Meetings" ? "bg-[#092E24]" : "bg-[#061B15]"}`}>
           <div><Video color="white" size={30} /></div>
           <div className=' font-normal text-lg'>Meetings</div>
         </div>
         {/* AGENTS TAB */}
-        <div onClick={() => setSelected("Agents")} className={`mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24] ${selected === "Agents" ? "bg-[#092E24]" : "bg-[#061B15]"}` }>
+        <div onClick={() => {setSelected("Agents");navigate("/agents")}} className={`mt-6 px-4 p-2 gap-3 flex flex-row items-center cursor-pointer rounded-xl hover:bg-[#092E24] ${selected === "Agents" ? "bg-[#092E24]" : "bg-[#061B15]"}` }>
           <div><Bot color="white" size={30} /></div>
           <div className=' font-normal text-lg'>Agents</div>
         </div>

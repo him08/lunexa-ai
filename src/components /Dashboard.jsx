@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '../App.css'
 import { Plus } from 'lucide-react'
 import { Search } from 'lucide-react'
 import { ChevronsUpDown } from 'lucide-react'
 import Footer from './Footer'
+import axios from 'axios'
 
 function Dashboard({fromAgents,setShowModal}) {
-    const [count, setCount] = useState(0);
 
+    const [count, setCount] = useState(0);
+    // const callHelloApi = async () => {
+    //     const response = await axios.get('http://localhost:5000/hello')
+    //     console.log(response)
+    // }
+
+    // useEffect(() => {
+    //     callHelloApi()
+    // },[])
     return (
         <>
             <div className='bg-[#F5F5F5] h-full w-full flex-col '>

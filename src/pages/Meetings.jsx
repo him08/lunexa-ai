@@ -3,9 +3,9 @@ import '../App.css'
 import { Plus } from 'lucide-react'
 import { Search } from 'lucide-react'
 import { ChevronsUpDown } from 'lucide-react'
-import Footer from './Footer'
-import Dashboard from './Dashboard'
-import Modal from './Modal'
+import Footer from '../components /Footer'
+import Dashboard from '../components /Dashboard'
+import Modal from '../components /Modal'
 
 function Meetings() {
     const [showModal, setShowModal] = useState(false)
@@ -14,7 +14,7 @@ function Meetings() {
         <>
          <Dashboard setShowModal={setShowModal}/>
          <div className='flex justify-center'>
-         <Modal showModal={showModal} setShowModal={setShowModal}/>
+        {showModal && <Modal setShowModal={setShowModal}/> }
          </div>
         </>
 
