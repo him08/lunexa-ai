@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
 const agentSchema = new Schema({
+  avatar:String,
   name: String,
   instructions: String,
 });

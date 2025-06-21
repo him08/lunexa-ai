@@ -14,7 +14,7 @@ mongoose.connect(process.env.DATABASE_URL)
   .catch(() => process.exit(1))
 
 
-// GET MEETINGS >>
+// GET MEETINGS from DB  >>
 app.get("/meetings",async(req,res)=>{
     try {
         const meetings= await Meeting.find({})
@@ -26,7 +26,7 @@ app.get("/meetings",async(req,res)=>{
     
 })
 
-//  NEW MEETING DB >>
+//  NEW MEETING to DB >>
 app.post("/meetings",async(req,res)=>{
     const{name,agent}=req.body
     try{
@@ -53,10 +53,12 @@ app.get("/agents",async(req,res)=>{
 
 // CREATE NEW AGENT in database save >>>
 app.post("/agents",async (req,res)=>{
-    const {name, instructions}  = req.body
+    const {avatar,name,instructions}  = req.body
+   
     try{
-    const agent = await Agent.create({name,instructions})
+    const agent = await Agent.create({avatar,name,instructions})
     res.json({status:200,message:"success",data: agent})
+    
     }
     catch(error){
         res.json({status: 500, message: "Failure"})
