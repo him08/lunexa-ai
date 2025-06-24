@@ -4,7 +4,9 @@ const ObjectId = Schema.ObjectId;
 
 const agentSchema = new Schema({
   avatar:String,
-  name: String,
+  name: {
+    type: String, unique: true
+  },
   instructions: String,
 });
 

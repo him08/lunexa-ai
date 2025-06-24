@@ -28,6 +28,7 @@ function Modal({ fromAgents, setShowModal }) {
         setAgents(names);
         setFilteredAgents(names);
     };
+    // DISPLAY
     // AVATAR LOGICC >>
     const avatars = ["/bots1.png","/bots2.png","/bots3.png","/bots4.png","/bot5.png", "/bot6.png", "/bot7.png", "/bot8.png", "/bot9.png","/bot10.png","/botts.png"];
     useEffect(()=>{
@@ -73,7 +74,7 @@ function Modal({ fromAgents, setShowModal }) {
         } else {
             await axios.post('http://localhost:5000/meetings', {
                 name: meetingName,
-                agent: meetingAgent
+                agentName: meetingAgent
             });
             setMeetingAgent("");
             setMeetingName("");

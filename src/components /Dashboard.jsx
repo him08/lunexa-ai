@@ -7,11 +7,21 @@ import Footer from './Footer'
 import axios from 'axios'
 import { CornerDownRight } from 'lucide-react'
 import { Video } from 'lucide-react'
+import {ClockFading} from 'lucide-react'
+import { ClockArrowUp } from 'lucide-react'
+import {Trash2 } from 'lucide-react'
 
+// DELETE MEETINGS >>>>>>>
+const deleteMeeting=(id)=> {
+    console.log(id)
+   let res= axios.delete(`http://localhost:5000/meetings/${id}`)
+   console.log(res.data)
+}
 const mapMeet = (e) => {
     const obj = {
         name: e.name,
         agent: e.agent,
+        _id: e._id
 
     }
     return obj;
@@ -48,20 +58,28 @@ function Dashboard({ fromAgents, setShowModal }) {
                     {/* AVATAR AND NAME */}
                     <div className=' flex mt-3 ml-3 flex-row items-center w-full relative'>
                     
-                        <div className='font-bold'>{e.name}</div>
-
+                        <div className='flex justify-start font-bold flex-1'>{e.name}</div>
+                        <div className='flex justify-around mr-40 items-center gap-50'>
                         {/* MEETINGS */}
-                        <div className='absolute right-4 px-2 py-1 mr-50 text-xs bg-gray-100 font-normal flex items-center gap-2 rounded-md'>
-                            <Video size={14} color='blue' />
-                            <span>3 Meetings</span>
+                        <div className='px-2 py-1 text-xs bg-gray-100 font-normal flex items-center gap-2 rounded-md'>
+                            <ClockFading size={14} color='blue' />
+                            <span>Upcoming</span>
                         </div>
-
+                        <div className='px-2 py-1 text-xs bg-gray-100 font-normal flex items-center gap-2 rounded-md'>
+                        <ClockArrowUp  size={14} color='blue' />
+                            <span>No duration</span>
+                        </div>
+                        <div onClick={()=>deleteMeeting(e._id)} className='text-xs bg-white font-normal flex items-center gap-2 rounded-md'>
+                        <Trash2 size={14} color='red' />
+                        </div>
+                      
+                        </div>
                     </div>
                     {/* INSTRUCTIONS */}
                     <div className=' flex flex-row mt-0 ml-4 mb-2 p-1 gap-2 items-center'>
                         <div><CornerDownRight color='gray' size={20} /></div>
-                        <div>{e.agent}</div>
-
+                        <div>{e.agent.name}</div>
+                        <img height={25} width={40} src={e.agent.avatar} />
                     </div>
                     <div className=' hover:bg-gray-100 h-0.5 bg-gray-200 rounded-xl '></div>
                 </div>
@@ -103,7 +121,6 @@ function Dashboard({ fromAgents, setShowModal }) {
         let response = await axios.get('http://localhost:5000/meetings')
         let meetingsData = response?.data?.data
         let filteredMeetings = meetingsData.map(mapMeet)
-        console.log(filteredMeetings)
         setMeetings(filteredMeetings)
     }
 
@@ -205,12 +222,13 @@ function Dashboard({ fromAgents, setShowModal }) {
                 </div>
                 < Footer />
                 {
+                    (!agents || !meetings) &&
                     <>
-
                         <div className='flex justify-center items-center'><img className="w-86 h-56" src="/processing.svg"></img></div>
                         <div className='flex justify-center items-center font-medium'>{fromAgents ? "Create your first Agent" : "Create your first Meeting"}</div>
-                    </>
+                        </>
                 }
+                
             </div>
         </>
 

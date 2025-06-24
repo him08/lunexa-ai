@@ -17,28 +17,33 @@ mongoose.connect(process.env.DATABASE_URL)
 // GET MEETINGS from DB  >>
 app.get("/meetings",async(req,res)=>{
     try {
-        const meetings= await Meeting.find({})
+        const meetings= await Meeting.find({}).populate('agent').exec()
         res.json({status:200,message:"meetings fetched successfully",data:meetings})
     }
         catch(error){
-            res.json({status:500,message:'Failure'})
+            console.log(error)
+            res.status(500).json({status:500,message:'Failure'})
         }
     
 })
 
 //  NEW MEETING to DB >>
 app.post("/meetings",async(req,res)=>{
-    const{name,agent}=req.body
+    const{name,agentName}=req.body
     try{
-        const meetings = await Meeting.create({name,agent})
+        const foundAgent = await Agent.findOne({name: agentName})
+        if(!foundAgent){
+            res.json({status: 400, message: "Agent not found"})
+        }
+        const meetings = await Meeting.create({name,agent: foundAgent._id})
         res.json({status:200,message:"success",data: meetings})
         }
         catch(error){
-            res.json({status: 500, message: "Failure"})
+            res.status(500).json({status: 500, message: "Failure"})
         }
 })
 
-// GET THE AGENT FROM TE DATABASE  >>
+// GET THE AGENT FROM ThE DATABASE  >>
 
 app.get("/agents",async(req,res)=>{
     try{
@@ -47,6 +52,18 @@ app.get("/agents",async(req,res)=>{
     }
     catch(error){
     res.json({status: 500, message: "Failure"})
+    }
+})
+// DELETE THE MEETING >>
+
+app.delete("/meetings/:id",async(req,res)=>{
+    try{       
+        const meetingId = req.params.id
+        const result =await Meeting.findByIdAndDelete(meetingId)
+       res.json({status:200,message:"deleted successfully",data:result})
+    }
+    catch(error){
+        res.json({status:500, message:"Not Deleted"})
     }
 })
 
