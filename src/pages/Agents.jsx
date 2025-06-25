@@ -13,7 +13,7 @@ function Agents() {
     return (
         <>
          <Dashboard  setShowModal={ setShowModal} fromAgents={true} />
-         {showModal && <Modal fromAgents={true} setShowModal={setShowModal}/> }
+         {showModal && <Modal fromAgents={true} setShowModal={setShowModal} /> }
         </>
 
     )

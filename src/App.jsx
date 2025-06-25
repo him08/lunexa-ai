@@ -15,7 +15,7 @@ function App() {
     <>
   <div className='md:flex flex-row h-screen overflow-x-hidden'>
     <Navbar setSelected={setSelected} selected={selected} showSideBar={showSideBar} setShowSideBar={setShowSideBar}/>
-   <MainSection setShowSideBar={setShowSideBar} showSideBar={showSideBar} selected={selected} />
+   <MainSection setShowSideBar={setShowSideBar} showSideBar={showSideBar} selected={selected} setSelected={setSelected}/>
    <ToastContainer />
     </div>
     </>

@@ -10,8 +10,12 @@ import { Video } from 'lucide-react'
 import {ClockFading} from 'lucide-react'
 import { ClockArrowUp } from 'lucide-react'
 import {Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import MeetingDetails from './MeetingDetails'
+
 
 // DELETE MEETINGS >>>>>>>
+
 const deleteMeeting=(id)=> {
     console.log(id)
    let res= axios.delete(`http://localhost:5000/meetings/${id}`)
@@ -28,7 +32,7 @@ const mapMeet = (e) => {
 }
 
 function Dashboard({ fromAgents, setShowModal }) {
-
+    const navigate= useNavigate()
     const [agents, setAgents] = useState([])
     const [meetings, setMeetings] = useState([])
     const mapFunc = (e) => {
@@ -54,7 +58,8 @@ function Dashboard({ fromAgents, setShowModal }) {
     const displayMeetings = (e) => {
         return (
             <>
-                <div className='flex flex-col space-y-1 hover:bg-gray-100 cursor-pointer'>
+            
+                <div className='flex flex-col space-y-1 hover:bg-gray-100 cursor-pointer'onClick={()=> navigate(`/meetings/${e._id}`)}>
                     {/* AVATAR AND NAME */}
                     <div className=' flex mt-3 ml-3 flex-row items-center w-full relative'>
                     

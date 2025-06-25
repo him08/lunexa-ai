@@ -5,8 +5,11 @@ import { ChevronsUpDown } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
-function Modal({ fromAgents, setShowModal }) {
+function Modal({ fromAgents, setShowModal,setSelected }) {
+
+    const navigate = useNavigate();
     // MEETINGS
     const [meetingAgent, setMeetingAgent] = useState("");
     const [meetingName, setMeetingName] = useState("");
@@ -54,6 +57,8 @@ function Modal({ fromAgents, setShowModal }) {
         );
         setFilteredAgents(results);
     }, [agentSearch, agents]);
+
+    
 
     
     const onCreate = async () => {
@@ -164,7 +169,7 @@ function Modal({ fromAgents, setShowModal }) {
                 {!fromAgents && (
                     <div className='flex justify-center text-sm'>
                         Not found what you're looking for?{" "}
-                        <span className='ml-1 text-green-700 hover:underline'>
+                        <span   onClick={() => navigate('/agents')} className='ml-1 text-green-700 hover:underline'>
                             Create a new agent
                         </span>
                     </div>

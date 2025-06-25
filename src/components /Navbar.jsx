@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import '../App.css'
 import { Video } from 'lucide-react';
@@ -8,6 +8,17 @@ import { Star } from 'lucide-react';
 import { Rocket } from 'lucide-react';
 function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
   const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+      if (location.pathname == '/meetings' && selected != 'Meetings') {
+        setSelected('Meetings')
+      }
+      if (location.pathname == '/agents' && selected != 'Agents') {
+        setSelected('Agents')
+      }
+    }, [location.pathname]);
+
   return (
     <>
     
