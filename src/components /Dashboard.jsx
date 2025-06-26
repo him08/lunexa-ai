@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom'
 import MeetingDetails from './MeetingDetails'
 
 
+
+
 // DELETE MEETINGS >>>>>>>
 
 const deleteMeeting=(id)=> {
@@ -35,6 +37,12 @@ function Dashboard({ fromAgents, setShowModal }) {
     const navigate= useNavigate()
     const [agents, setAgents] = useState([])
     const [meetings, setMeetings] = useState([])
+    const [searchTerm,setSearchTerm] =useState("")
+    const [currentPage,setCurrentPage]=useState(1)
+    const itemsPerPage =5
+    const indexOfLastItem =currentPage * itemsPerPage
+    const indexOfFirstItem= indexOfLastItem - itemsPerPage
+
     const mapFunc = (e) => {
         const obj = {
             name: e.name,
@@ -55,6 +63,16 @@ function Dashboard({ fromAgents, setShowModal }) {
         return e.avatar
     }
 
+    const filteredAgents =agents.filter(agent =>
+        agent.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    const filteredMeetings = meetings.filter(meeting =>
+        meeting.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    
+    const paginatedAgents =filteredAgents.slice(indexOfFirstItem,indexOfLastItem)
+    const paginatedMeetings=filteredMeetings.slice(indexOfFirstItem,indexOfLastItem)
+    
     const displayMeetings = (e) => {
         return (
             <>
@@ -174,9 +192,11 @@ function Dashboard({ fromAgents, setShowModal }) {
                     <div className='p-2 mx-5 w-44 h-10 gap-2 bg-[#FFFFFF] flex items-center rounded-xl box-border size-32 border-2 border-gray-300  focus-within:border-gray-400 focus-within:border-3 focus-within:scale-105 transition-all duration-200'>
                         <div> <Search size={20} color="black" /></div>
                         <input name='Search'
+                            value={searchTerm}
                             type='text'
                             placeholder='Filter by name'
-                            className='outline-none w-full text-sm'>
+                            className='outline-none w-full text-sm'
+                            onChange={(e)=>setSearchTerm(e.target.value)}>
                         </input>
                     </div>
                     {/* STATUS */}
@@ -202,8 +222,8 @@ function Dashboard({ fromAgents, setShowModal }) {
 
                         {fromAgents ?
                             (
-                                agents.length > 0 ? (
-                                    agents.map(displayAgent)
+                                paginatedAgents.length > 0 ? (
+                                 paginatedAgents.map(displayAgent)
                                 )
                                     : (
                                         <div className='h-30 flex justify-center items-center font-light' >
@@ -213,8 +233,8 @@ function Dashboard({ fromAgents, setShowModal }) {
                             )
                             :
                             (
-                                meetings.length > 0 ? (
-                                    meetings.map(displayMeetings)
+                                paginatedMeetings.length > 0 ? (
+                                    paginatedMeetings.map(displayMeetings)
                                 ) : (
                                     <div className='h-30 flex justify-center items-center font-light'>
                                         No results.
@@ -225,7 +245,11 @@ function Dashboard({ fromAgents, setShowModal }) {
 
                     </div>
                 </div>
-                < Footer />
+                < Footer  
+                 currentPage={currentPage} 
+                 totalPages={Math.ceil((fromAgents ? filteredAgents.length : filteredMeetings.length) / itemsPerPage)} 
+                 setCurrentPage={setCurrentPage} 
+                />
                 {
                     (!agents || !meetings) &&
                     <>

@@ -10,6 +10,8 @@ function App() {
   const [count, setCount] = useState(0)
   const[selected,setSelected]=useState("Meetings");
   const[showSideBar,setShowSideBar]=useState(true)
+  const a =  import.meta.env.VITE_VAPI_WEB_KEY_TOKEN
+  console.log(a)
   
   return (
     <>
