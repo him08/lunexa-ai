@@ -4,7 +4,6 @@ import { Plus } from 'lucide-react'
 import { Search } from 'lucide-react'
 import { ChevronsUpDown } from 'lucide-react'
 import Footer from './Footer'
-import axios from 'axios'
 import { CornerDownRight } from 'lucide-react'
 import { Video } from 'lucide-react'
 import {ClockFading} from 'lucide-react'
@@ -12,7 +11,13 @@ import { ClockArrowUp } from 'lucide-react'
 import {Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import MeetingDetails from './MeetingDetails'
-
+// import { SignedIn, SignedOut, SignInButton,useUser} from '@clerk/clerk-react';
+import { useUser, SignInButton, useClerk } from '@clerk/clerk-react';
+import { RedirectToSignIn } from '@clerk/clerk-react'
+import { useAuth } from '@clerk/clerk-react';
+import { jwtDecode } from "jwt-decode";
+import axiosClient from '../utilities/axiosConfig'
+import Cookies from "js-cookie";
 
 
 
@@ -20,7 +25,7 @@ import MeetingDetails from './MeetingDetails'
 
 const deleteMeeting=(id)=> {
     console.log(id)
-   let res= axios.delete(`http://localhost:5000/meetings/${id}`)
+   let res= axiosClient.delete(`http://localhost:5000/meetings/${id}`)
    console.log(res.data)
 }
 const mapMeet = (e) => {
@@ -33,7 +38,8 @@ const mapMeet = (e) => {
     return obj;
 }
 
-function Dashboard({ fromAgents, setShowModal }) {
+
+function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMeetingUpdate,setTriggerAgentUpdate,triggerAgentUpdate}) {
     const navigate= useNavigate()
     const [agents, setAgents] = useState([])
     const [meetings, setMeetings] = useState([])
@@ -42,7 +48,48 @@ function Dashboard({ fromAgents, setShowModal }) {
     const itemsPerPage =5
     const indexOfLastItem =currentPage * itemsPerPage
     const indexOfFirstItem= indexOfLastItem - itemsPerPage
+    const [redirectToSignIn,setRedirectToSignIn]=useState(false)
+    const token = Cookies.get('auth')
+    
+    const { user, isSignedIn } = useUser();
+    const { getToken, sessionId } = useAuth();
 
+    // const fetchToken = async () => {
+    //     const token = await getToken();
+    //     const decoded = jwtDecode(token);
+    //     console.log("Token:", token);
+    //     console.log("Decoded Token:", decoded);
+    // console.log("User ID:", decoded.sub);
+    //   };
+    // if(isSignedIn){
+    // fetchToken()
+    // }
+
+    const setTokenCookie = async () => {
+            const token = await getToken({template: 'JWT'});
+            Cookies.set("auth", token);
+            window.location.reload()
+    }
+    useEffect(() => {
+        if(isSignedIn && !token){
+        setTokenCookie()
+        }
+        else if(isSignedIn === false && token){
+            Cookies.remove("auth")
+            window.location.reload()
+        }
+    },[isSignedIn])
+
+
+    // FOR SIGN IN FOR CLERK >>>
+    const handleNewClick = () => {
+        if (isSignedIn) {
+            setShowModal(true);
+        } else {
+            // Trigger Sign In popup
+          setRedirectToSignIn(true)
+        }
+    };
     const mapFunc = (e) => {
         const obj = {
             name: e.name,
@@ -50,17 +97,6 @@ function Dashboard({ fromAgents, setShowModal }) {
             instructions: e.instructions
         }
         return obj;
-    }
-
-    const getName = (e) => {
-        return e.name
-    }
-    const getInstructions = (e) => {
-        return e.instructions
-    }
-
-    const getAvatar = (e) => {
-        return e.avatar
     }
 
     const filteredAgents =agents.filter(agent =>
@@ -75,8 +111,8 @@ function Dashboard({ fromAgents, setShowModal }) {
     
     const displayMeetings = (e) => {
         return (
-            <>
-            
+          
+            <>     
                 <div className='flex flex-col space-y-1 hover:bg-gray-100 cursor-pointer'onClick={()=> navigate(`/meetings/${e._id}`)}>
                     {/* AVATAR AND NAME */}
                     <div className=' flex mt-3 ml-3 flex-row items-center w-full relative'>
@@ -141,14 +177,14 @@ function Dashboard({ fromAgents, setShowModal }) {
     }
 
     const getMeetings = async () => {
-        let response = await axios.get('http://localhost:5000/meetings')
+        let response = await axiosClient.get('http://localhost:5000/meetings')
         let meetingsData = response?.data?.data
         let filteredMeetings = meetingsData.map(mapMeet)
         setMeetings(filteredMeetings)
     }
 
     const getAgents = async () => {
-        let response = await axios.get('http://localhost:5000/agents')
+        let response = await axiosClient.get('http://localhost:5000/agents')
         let agentData = response?.data?.data
         let filteredAgentData = agentData.map(mapFunc)
 
@@ -157,34 +193,43 @@ function Dashboard({ fromAgents, setShowModal }) {
 
     }
 
+    useEffect(()=>{
+        if(triggerMeetingUpdate){
+            getMeetings()
+            setTriggerMeetingUpdate(false)
+        }
+    },[triggerMeetingUpdate])
+
+    useEffect(()=>{
+        if(triggerAgentUpdate){
+            getAgents()
+            setTriggerAgentUpdate(false)
+        }
+    },[triggerAgentUpdate])
+
     useEffect(() => {
-        if (!fromAgents) {
+        if (!fromAgents && isSignedIn) {
             getMeetings()
         }
-    }, [!fromAgents])
+    }, [!fromAgents,isSignedIn])
 
     useEffect(() => {
-        if (fromAgents) {
+        if (fromAgents && isSignedIn) {
             getAgents()
         }
-    }, [fromAgents])
-    // const callHelloApi = async () => {
-    //     const response = await axios.get('http://localhost:5000/hello')
-    //     console.log(response)
-    // }
+    }, [fromAgents,isSignedIn])
 
-    // useEffect(() => {
-    //     callHelloApi()
-    // },[])
     return (
         <>
+          { redirectToSignIn && <RedirectToSignIn/>
+            }
             <div className='bg-[#F5F5F5] h-full w-full flex-col '>
                 <div className=' p-5 mt-3 flex row justify-between'>
                     <div className='text-xl font-medium'>{fromAgents ? "My Agents" : "My Meetings"}</div>
                     {/* NEW MEETING BUTTON */}
-                    <div onClick={() => setShowModal(true)} className=' mx-5 w-36 h-12 gap-2 bg-[#3BAC5D] flex justify-center items-center rounded-lg cursor-pointer hover:bg-green-600'>
+                    <div onClick={handleNewClick} className=' mx-5 w-36 h-12 gap-2 bg-[#3BAC5D] flex justify-center items-center rounded-lg cursor-pointer hover:bg-green-600'>
                         <div><Plus size={20} color='white' /></div>
-                        <div className='font-medium text-s text-white'> {fromAgents ? "New Agent" : "New Meeting"}</div>
+                        <div className='font-medium text-s text-white' > {fromAgents ? "New Agent" : "New Meeting"}</div>
                     </div>
                 </div>
                 <div className='flex flex-row '>

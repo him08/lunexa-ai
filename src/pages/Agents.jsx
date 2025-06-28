@@ -10,10 +10,11 @@ import Modal from '../components /Modal'
 function Agents() {
 
     const [showModal, setShowModal] = useState(false)
+    const [triggerAgentUpdate, setTriggerAgentUpdate] = useState(false)
     return (
         <>
-         <Dashboard  setShowModal={ setShowModal} fromAgents={true} />
-         {showModal && <Modal fromAgents={true} setShowModal={setShowModal} /> }
+         <Dashboard  setShowModal={ setShowModal} fromAgents={true} setTriggerAgentUpdate={setTriggerAgentUpdate} triggerAgentUpdate={triggerAgentUpdate}/>
+         {showModal && <Modal fromAgents={true} setShowModal={setShowModal} setTriggerAgentUpdate={setTriggerAgentUpdate}/> }
         </>
 
     )

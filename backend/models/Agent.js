@@ -8,6 +8,7 @@ const agentSchema = new Schema({
     type: String, unique: true
   },
   instructions: String,
+  userId: String
 });
 
 

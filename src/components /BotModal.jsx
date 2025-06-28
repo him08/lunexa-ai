@@ -1,6 +1,6 @@
 import { X, Bot } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axiosClient from '../utilities/axiosConfig';
 function BotModal({ setShowBotModal }) {
     const [messages, setMessages] = useState([
         { from: "bot", text: "👋 Welcome! Please select an agent to start." }
@@ -23,7 +23,7 @@ function BotModal({ setShowBotModal }) {
         const foundAgent = agents.find(agent => agent.name === agentName)
         const instructions = foundAgent?.instructions
         const prompt = `Act like agent ${agentName} your instructions are ${instructions} you have to stick only to these instructions and respond according to them, now please answer all my questions based ont this."}`
-        let response = await axios.post('http://localhost:5000/generate-response', {
+        let response = await axiosClient.post('http://localhost:5000/generate-response', {
             prompt: prompt
         })
         console.log("ishan", response?.data?.reply)
@@ -64,7 +64,7 @@ function BotModal({ setShowBotModal }) {
         ${chatHistory} Here is the last question of user 
         "${userMessage}". Answer it accordingly .`
         console.log(prompt)
-            const response = await axios.post("http://localhost:5000/generate-response", {
+            const response = await axiosClient.post("http://localhost:5000/generate-response", {
                 prompt: prompt
             })
             const botReply = response?.data?.reply || "Sorry, I couldn't process that.";
@@ -79,7 +79,7 @@ function BotModal({ setShowBotModal }) {
     };
 
     const getAgents = async () => {
-        let response = await axios.get('http://localhost:5000/agents')
+        let response = await axiosClient.get('http://localhost:5000/agents')
         let agentData = response?.data?.data
         let filteredAgentData = agentData.map(mapFunc)
 

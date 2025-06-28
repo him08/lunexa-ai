@@ -5,6 +5,7 @@ import Search from './components /SearchBar'
 import MainSection from './components /MainSection'
 import Modal from './components /Modal'
 import { ToastContainer } from 'react-toastify';
+// import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,7 +15,9 @@ function App() {
   console.log(a)
   
   return (
+    
     <>
+    
   <div className='md:flex flex-row h-screen overflow-x-hidden'>
     <Navbar setSelected={setSelected} selected={selected} showSideBar={showSideBar} setShowSideBar={setShowSideBar}/>
    <MainSection setShowSideBar={setShowSideBar} showSideBar={showSideBar} selected={selected} setSelected={setSelected}/>

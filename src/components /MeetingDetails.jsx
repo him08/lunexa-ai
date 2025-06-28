@@ -19,7 +19,7 @@ function MeetingDetails() {
 
             <div className='bg-[#FFFFFF] m-7 h-120 flex-col justify-center items-center rounded-xl'>
                 <div className='flex justify-center items-center mt-10'>
-                    <img className="w-86 h-60" src="/processing.svg" alt="processing" />
+                    <img className="w-86 h-60" src="/images/processing.svg" alt="processing" />
                 </div>
                 <div className='flex justify-center items-center text-2xl'>Not Started Yet</div>
                 <div className='font-extralight flex justify-center items-center mt-2 text-gray-500'>

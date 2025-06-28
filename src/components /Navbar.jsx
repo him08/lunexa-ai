@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { UserButton } from '@clerk/clerk-react';
+// import { useUser } from '@clerk/clerk-react';
 import '../App.css'
 import { Video } from 'lucide-react';
 import { Bot } from 'lucide-react';
@@ -9,6 +10,7 @@ import { Rocket } from 'lucide-react';
 function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
   const navigate = useNavigate();
     const location = useLocation();
+    // const { user } = useUser()
 
     useEffect(() => {
       if (location.pathname == '/meetings' && selected != 'Meetings') {
@@ -30,6 +32,7 @@ function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
         <div className='mt-6 gap-3 px-4 flex flex-row items-center'>
           <div><img src='/logo.svg' /></div>
           <div className='font-bold text-2xl'>Meet.AI</div>
+         <div className='ml-22 mt-2' > <UserButton  /> </div>
         </div>
         {/* LINE */}
         <div className='mt-4 h-1 bg-[#1D2E2A] mx-4'></div>
@@ -71,18 +74,18 @@ function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
             <div className="text-center py-3 text-base font-medium">Upgrade</div>
           </div>
         </div>
-        {/* EMAIL ID AND NAME BOX */}
+        {/* EMAIL ID AND NAME BOX
         <div className='flex flex-col p-6 mx-2 mb-2 rounded-xl bg-[#1D2E2A] '>
-          {/* AVATAR CIRCLE */}
+           AVATAR CIRCLE 
           <div className='flex flex-row gap-4'>
-              <div className='w-10 h-10 rounded-full bg-[#BFCA33] flex items-center justify-center'>HV</div>
-          {/* NAME AND EMAIL */}
+              <div className='w-8 h-8 rounded-full bg-[#FFFFFF] flex items-center justify-center'>  <UserButton /></div>
+         NAME AND EMAIL 
           <div className='flex flex-col justify-center'>
-              <div className='text-s font-normal'>Himanshi</div>
-              <div className='gap-6 text-xs font-normal'>himanshivarshney25@gmail.com</div>
+              <div className='text-s font-normal'>{user?.fullName} </div>
+              <div className='gap-6 text-xs font-normal'>{user?.primaryEmailAddress?.emailAddress}</div>
           </div>
           </div>
-        </div>
+        </div> */}
       </div>
       </div>
 }

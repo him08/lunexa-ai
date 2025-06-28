@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import '../App.css'
 import { X } from 'lucide-react'
 import { ChevronsUpDown } from 'lucide-react'
-import axios from 'axios'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import axiosClient from '../utilities/axiosConfig'
 
-function Modal({ fromAgents, setShowModal,setSelected }) {
+function Modal({ fromAgents, setShowModal,setSelected,setTriggerMeetingUpdate,setTriggerAgentUpdate}) {
 
     const navigate = useNavigate();
     // MEETINGS
@@ -26,7 +26,7 @@ function Modal({ fromAgents, setShowModal,setSelected }) {
   
     const[changeAgentAvatar,setChangeAgentAvatar]=useState();
     const getAgents = async () => {
-        let response = await axios.get('http://localhost:5000/agents');
+        let response = await axiosClient.get('http://localhost:5000/agents');
         let names = response?.data?.data?.map(agent => agent.name);
         setAgents(names);
         setFilteredAgents(names);
@@ -67,7 +67,7 @@ function Modal({ fromAgents, setShowModal,setSelected }) {
                 toast.error('Name and instructions are required');
                 return;
             }
-            await axios.post('http://localhost:5000/agents', {
+            await axiosClient.post('http://localhost:5000/agents', {
                 avatar:changeAgentAvatar,
                 name: agentName,
                 instructions: agentInstructions
@@ -75,15 +75,17 @@ function Modal({ fromAgents, setShowModal,setSelected }) {
             setAgentName("");
             setAgentInstructions("");
             toast.success("Agent created successfully!");
+            setTriggerAgentUpdate(true)
       
         } else {
-            await axios.post('http://localhost:5000/meetings', {
+            await axiosClient.post('http://localhost:5000/meetings', {
                 name: meetingName,
                 agentName: meetingAgent
             });
             setMeetingAgent("");
             setMeetingName("");
             toast.success("Meeting created successfully!");
+            setTriggerMeetingUpdate(true)
         }
         setShowModal(false);
        
