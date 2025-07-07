@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route,Navigate} from "react-router-dom";
 import Meetings from '../pages/Meetings';
 import MeetingDetails from './MeetingDetails';
+import VideoRoom from './VideoRoom';
 const Agents = lazy(() => import('../pages/Agents'));
 
 
@@ -24,6 +25,7 @@ function MainSection({ setShowSideBar, showSideBar , setSelected}) {
           <Route path='/meetings/:meetingId' element={<MeetingDetails/>} />
             <Route path='/meetings' element={<Meetings />} />
             <Route path='/agents' element={<Agents />} />
+            <Route path='/call/:callId' element={<VideoRoom/>}/>
           </Routes>
           </Suspense>
         </div>

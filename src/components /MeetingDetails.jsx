@@ -3,6 +3,7 @@ import CallModal from './CallModal';
 import { ChevronRight, Video, Ban, MessageCircle } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 import BotModal from './BotModal'  // Create this component
+import VideoRoom from './VideoRoom';
 
 function MeetingDetails() {
     const [showCallModal, setShowCallModal] = useState(false)
@@ -43,7 +44,7 @@ function MeetingDetails() {
             </div>
 
             {/* Modals */}
-            {showCallModal && <CallModal setShowCallModal={setShowCallModal} />}
+            {showCallModal && <CallModal callId={meetingId} setShowCallModal={setShowCallModal} />}
             {showBotModal && <BotModal setShowBotModal={setShowBotModal} />}
         </>
     )

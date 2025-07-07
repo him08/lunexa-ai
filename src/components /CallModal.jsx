@@ -3,9 +3,10 @@ import { useState } from 'react'
 import { MicOff } from 'lucide-react'
 import { VideoOff } from 'lucide-react'
 import {LogIn} from 'lucide-react'
-function CallModal({ setShowCallModal }) {
+import {  useNavigate } from 'react-router-dom'
+function CallModal({ setShowCallModal,callId }) {
 
-
+const navigate = useNavigate()
     return (
         <>
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
@@ -43,7 +44,7 @@ function CallModal({ setShowCallModal }) {
                         <div className='w-32 h-10 gap-2 bg-[#3BAC5D] flex flex-row justify-center items-center rounded-lg cursor-pointer hover:bg-green-600'>
 
                              <div><LogIn size={20} color='white' /></div> 
-                            <div className='font-medium text-s text-white'>Join Call</div>
+                            <div onClick={()=> navigate(`/call/${callId}`)} className='font-medium text-s text-white'>Join Call</div>
                         </div>
                     </div>
                 </div>

@@ -19,6 +19,8 @@
   "description": "",
   "dependencies": {
     "@clerk/backend": "^2.3.0",
+    "@stream-io/node-sdk": "^0.4.24",
+    "@stream-io/openai-realtime-api": "^0.2.0",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",

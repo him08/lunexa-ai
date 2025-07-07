@@ -6,10 +6,16 @@ const Agent = require('./models/Agent');
 const Meeting = require('./models/Meeting');
 const { verifyToken } = require('@clerk/backend'); 
 const { default: axiosClient } = require('../src/utilities/axiosConfig');
+const { StreamClient } = require("@stream-io/node-sdk");
 const app=express();
 // FOR CORS POLICY 
 app.use(cors())
 app.use(express.json())
+
+const apiKey = process.env.STREAM_API_KEY;
+const apiSecret = process.env.STREAM_API_SECRET;
+
+const client = new StreamClient(apiKey, apiSecret);
 
 mongoose.connect(process.env.DATABASE_URL)
   .then(() => console.log('DATABASE Connected!'))
@@ -30,7 +36,10 @@ mongoose.connect(process.env.DATABASE_URL)
       req.userId = payload.sub; 
       next();
     } catch (err) {
-        console.log(err)
+       if(err.reason === 'token-expired'){
+        return res.status(401).json({code: 'TOKEN_EXPIRED', message: 'Token is expired'});
+       }
+    
         return res.status(401).json({code:'TOKEN_INVALID', message: 'Unauthorized - Invalid token' });
     }
   
@@ -95,6 +104,87 @@ app.delete("/meetings/:id",async(req,res)=>{
     }
 })
 
+// app.get("/stream-token", (req, res) => {
+//   const userId = req.query.userId;
+
+//   if (!userId) {
+//     return res.status(400).json({ error: "userId is required" });
+//   }
+
+//   const token = client.generateUserToken({user_id: userId});
+//   res.json({ token });
+// });
+
+app.post("/join-call", async (req, res) => {
+
+  const { callId , id, name, image} = req.body;
+
+  if (!callId) {
+    return res.status(400).json({ error: "callId is required" });
+  }
+  try {
+  const user = {
+    id,
+    name,
+    image: image,
+    role: "admin"
+  };
+  await client.upsertUsers([user])
+  const token = client.generateUserToken({user_id: user.id})
+  
+const call = client.video.call("default", callId);
+await call.create({
+  data:{
+    created_by_id: user.id,
+    custom: {
+    meetingId: callId
+    },
+    settings_override: {
+      transcription: {
+        language: 'en',
+        mode: 'auto-on',
+        closed_caption_mode: 'auto-on'
+      },
+      recording: {
+        mode: 'auto-on',
+        quality: '1080p'
+      }
+    }
+  }
+})
+    res.json({ success: true, token, message: "User joined successfully" });
+  } catch (error) {
+    console.error("Error in AI join:", error);
+    res.status(500).json({ error: "Failed to join AI Agent." });
+  }
+});
+
+app.post("/join-ai", async (req, res) => {
+
+  const { callId} = req.body;
+
+  if (!callId) {
+    return res.status(400).json({ error: "callId is required" });
+  }
+  const call = client.video.call("default", callId);
+  try {
+    const realtimeClient = await client.video.connectOpenAi({
+      call,
+      openAiApiKey: process.env.OPEN_AI_API_KEY,
+      agentUserId: "agent_Robo",
+      // model: "gpt-4o-realtime-preview",
+    });
+    realtimeClient.updateSession({ voice: "alloy" });
+    realtimeClient.updateSession({
+      instructions:
+        "You are a helpful assistant that can answer questions and help with tasks.",
+    });
+    res.json({ success: true, message: "AI joined successfully" });
+  } catch (error) {
+    console.error("Error in AI join:", error);
+    res.status(500).json({ error: "Failed to join AI Agent." });
+  }
+});
 
 
 
