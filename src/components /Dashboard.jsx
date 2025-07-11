@@ -6,9 +6,9 @@ import { ChevronsUpDown } from 'lucide-react'
 import Footer from './Footer'
 import { CornerDownRight } from 'lucide-react'
 import { Video } from 'lucide-react'
-import {ClockFading} from 'lucide-react'
+import { ClockFading } from 'lucide-react'
 import { ClockArrowUp } from 'lucide-react'
-import {Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import MeetingDetails from './MeetingDetails'
 // import { SignedIn, SignedOut, SignInButton,useUser} from '@clerk/clerk-react';
@@ -23,37 +23,37 @@ import Cookies from "js-cookie";
 
 // DELETE MEETINGS >>>>>>>
 
-const deleteMeeting=(id)=> {
-    console.log(id)
-   let res= axiosClient.delete(`http://localhost:5000/meetings/${id}`)
-   console.log(res.data)
-}
+
 const mapMeet = (e) => {
     const obj = {
         name: e.name,
         agent: e.agent,
-        _id: e._id
+        _id: e._id,
+        status: e.status
 
     }
     return obj;
 }
 
 
-function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMeetingUpdate,setTriggerAgentUpdate,triggerAgentUpdate}) {
-    const navigate= useNavigate()
+
+function Dashboard({ fromAgents, setShowModal, triggerMeetingUpdate, setTriggerMeetingUpdate, setTriggerAgentUpdate, triggerAgentUpdate }) {
+    const navigate = useNavigate()
     const [agents, setAgents] = useState([])
     const [meetings, setMeetings] = useState([])
-    const [searchTerm,setSearchTerm] =useState("")
-    const [currentPage,setCurrentPage]=useState(1)
-    const itemsPerPage =5
-    const indexOfLastItem =currentPage * itemsPerPage
-    const indexOfFirstItem= indexOfLastItem - itemsPerPage
-    const [redirectToSignIn,setRedirectToSignIn]=useState(false)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 5
+    const indexOfLastItem = currentPage * itemsPerPage
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage
+    const [redirectToSignIn, setRedirectToSignIn] = useState(false)
     const token = Cookies.get('auth')
-    
+    const [meetingData, setMeetingData] = useState([]);
     const { user, isSignedIn } = useUser();
     const { getToken, sessionId } = useAuth();
-
+    const [statusFilter, setStatusFilter] = useState("All");
+    const statuses = ["All", "not_started", "in_progress", "completed"];
+    const [selectedAgent, setSelectedAgent] = useState("All");
     // const fetchToken = async () => {
     //     const token = await getToken();
     //     const decoded = jwtDecode(token);
@@ -65,20 +65,29 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
     // fetchToken()
     // }
 
+    const deleteMeeting = async (id) => {
+        try {
+            await axiosClient.delete(`http://localhost:5000/meetings/${id}`);
+            // After successful deletion, refresh the meetings
+            getMeetings();
+        } catch (error) {
+            console.error("Error deleting meeting:", error);
+        }
+    };
     const setTokenCookie = async () => {
-            const token = await getToken({template: 'JWT'});
-            Cookies.set("auth", token);
-            window.location.reload()
+        const token = await getToken({ template: 'JWT' });
+        Cookies.set("auth", token);
+        window.location.reload()
     }
     useEffect(() => {
-        if(isSignedIn && !token){
-        setTokenCookie()
+        if (isSignedIn && !token) {
+            setTokenCookie()
         }
-        else if(isSignedIn === false && token){
+        else if (isSignedIn === false && token) {
             Cookies.remove("auth")
             window.location.reload()
         }
-    },[isSignedIn])
+    }, [isSignedIn])
 
 
     // FOR SIGN IN FOR CLERK >>>
@@ -87,7 +96,7 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
             setShowModal(true);
         } else {
             // Trigger Sign In popup
-          setRedirectToSignIn(true)
+            setRedirectToSignIn(true)
         }
     };
     const mapFunc = (e) => {
@@ -99,46 +108,59 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
         return obj;
     }
 
-    const filteredAgents =agents.filter(agent =>
+    const filteredAgents = agents.filter(agent =>
         agent.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     const filteredMeetings = meetings.filter(meeting =>
-        meeting.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    
-    const paginatedAgents =filteredAgents.slice(indexOfFirstItem,indexOfLastItem)
-    const paginatedMeetings=filteredMeetings.slice(indexOfFirstItem,indexOfLastItem)
-    
-    const displayMeetings = (e) => {
+        meeting.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (statusFilter === "All" || meeting.status === statusFilter) &&
+        (selectedAgent === "All" || meeting.agent?.name === selectedAgent)
+    );
+
+    const paginatedAgents = filteredAgents.slice(indexOfFirstItem, indexOfLastItem)
+    const paginatedMeetings = filteredMeetings.slice(indexOfFirstItem, indexOfLastItem)
+
+    const displayMeetings = (meeting) => {
         return (
-          
-            <>     
-                <div className='flex flex-col space-y-1 hover:bg-gray-100 cursor-pointer'onClick={()=> navigate(`/meetings/${e._id}`)}>
+
+            <>
+                <div className='flex flex-col space-y-1 hover:bg-gray-100 cursor-pointer' onClick={() => navigate(`/meetings/${meeting._id}`)}>
                     {/* AVATAR AND NAME */}
                     <div className=' flex mt-3 ml-3 flex-row items-center w-full relative'>
-                    
-                        <div className='flex justify-start font-bold flex-1'>{e.name}</div>
+
+                        <div className='flex justify-start font-bold flex-1'>{meeting.name}</div>
                         <div className='flex justify-around mr-40 items-center gap-50'>
-                        {/* MEETINGS */}
-                        <div className='px-2 py-1 text-xs bg-gray-100 font-normal flex items-center gap-2 rounded-md'>
-                            <ClockFading size={14} color='blue' />
-                            <span>Upcoming</span>
-                        </div>
-                        <div className='px-2 py-1 text-xs bg-gray-100 font-normal flex items-center gap-2 rounded-md'>
-                        <ClockArrowUp  size={14} color='blue' />
-                            <span>No duration</span>
-                        </div>
-                        <div onClick={()=>deleteMeeting(e._id)} className='text-xs bg-white font-normal flex items-center gap-2 rounded-md'>
-                        <Trash2 size={14} color='red' />
-                        </div>
-                      
+                            {/* MEETINGS */}
+                            <div className='px-2 py-1 text-xs bg-gray-100 font-normal flex items-center gap-2 rounded-md'>
+                                <ClockFading size={14} color='blue' />
+                                <span>
+                                    {
+                                        meeting.status === "not_started"
+                                            ? "Upcoming"
+                                            : meeting.status === "in_progress"
+                                                ? "In Progress"
+                                                : "Completed"
+                                    }
+                                </span>
+                            </div>
+                            <div className='px-2 py-1 text-xs bg-gray-100 font-normal flex items-center gap-2 rounded-md'>
+                                <ClockArrowUp size={14} color='blue' />
+                                <span>No duration</span>
+                            </div>
+                            <div onClick={(e) => {
+                                e.stopPropagation(); 
+                                deleteMeeting(meeting._id);
+                            }} className='text-xs bg-white font-normal flex items-center gap-2 rounded-md'>
+                                <Trash2 size={14} color='red' />
+                            </div>
+
                         </div>
                     </div>
                     {/* INSTRUCTIONS */}
                     <div className=' flex flex-row mt-0 ml-4 mb-2 p-1 gap-2 items-center'>
                         <div><CornerDownRight color='gray' size={20} /></div>
-                        <div>{e.agent.name}</div>
-                        <img height={25} width={40} src={e.agent.avatar} />
+                        <div>{meeting.agent.name}</div>
+                        <img height={25} width={40} src={meeting.agent.avatar} />
                     </div>
                     <div className=' hover:bg-gray-100 h-0.5 bg-gray-200 rounded-xl '></div>
                 </div>
@@ -179,6 +201,7 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
     const getMeetings = async () => {
         let response = await axiosClient.get('http://localhost:5000/meetings')
         let meetingsData = response?.data?.data
+        console.log(meetingsData)
         let filteredMeetings = meetingsData.map(mapMeet)
         setMeetings(filteredMeetings)
     }
@@ -193,35 +216,36 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
 
     }
 
-    useEffect(()=>{
-        if(triggerMeetingUpdate){
+    useEffect(() => {
+        if (triggerMeetingUpdate) {
             getMeetings()
             setTriggerMeetingUpdate(false)
         }
-    },[triggerMeetingUpdate])
+    }, [triggerMeetingUpdate])
 
-    useEffect(()=>{
-        if(triggerAgentUpdate){
+    useEffect(() => {
+        if (triggerAgentUpdate) {
             getAgents()
             setTriggerAgentUpdate(false)
         }
-    },[triggerAgentUpdate])
+    }, [triggerAgentUpdate])
 
     useEffect(() => {
         if (!fromAgents && isSignedIn) {
             getMeetings()
         }
-    }, [!fromAgents,isSignedIn])
+    }, [!fromAgents, isSignedIn])
 
     useEffect(() => {
-        if (fromAgents && isSignedIn) {
-            getAgents()
+        if (isSignedIn) {
+            getAgents();
         }
-    }, [fromAgents,isSignedIn])
+    }, [isSignedIn]);
+
 
     return (
         <>
-          { redirectToSignIn && <RedirectToSignIn/>
+            {redirectToSignIn && <RedirectToSignIn />
             }
             <div className='bg-[#F5F5F5] h-full w-full flex-col '>
                 <div className=' p-5 mt-3 flex row justify-between'>
@@ -241,21 +265,47 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
                             type='text'
                             placeholder='Filter by name'
                             className='outline-none w-full text-sm'
-                            onChange={(e)=>setSearchTerm(e.target.value)}>
+                            onChange={(e) => setSearchTerm(e.target.value)}>
                         </input>
                     </div>
                     {/* STATUS */}
 
                     {!fromAgents &&
                         <>
-                            <div className="p-2 mx-5 w-32 h-10 gap-2 bg-[#FFFFFF] flex items-center justify-around rounded-xl box-border size-32 border-2 border-gray-300  hover:bg-[#F5F5F5] cursor-pointer">
-                                <div className='font-extralight text-s'>Status</div>
-                                <div><ChevronsUpDown size={20} color="black" /></div>
+                            <div className="p-2 mx-5 w-40 h-10 bg-white rounded-xl border-2 border-gray-300">
+                                <select
+                                    value={statusFilter}
+                                    onChange={(e) => setStatusFilter(e.target.value)}
+                                    className="w-full h-full bg-transparent flex justify-center items-center outline-none text-sm font-extralight text-gray-600"
+                                > Status
+                                    {statuses.map((status) => (
+                                        <option key={status} value={status}>
+                                            {status === "not_started"
+                                                ? "Upcoming"
+                                                : status === "in_progress"
+                                                    ? "In Progress"
+                                                    : status === "completed"
+                                                        ? "Completed"
+                                                        : "Status"}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
+
                             {/* AGENT */}
-                            <div className="p-2 mx-5 w-32 h-10 gap-2 bg-[#FFFFFF] flex items-center justify-around rounded-xl box-border size-32 border-2 border-gray-300  hover:bg-[#F5F5F5] cursor-pointer">
-                                <div className='font-extralight text-s'>Agent</div>
-                                <div><ChevronsUpDown size={20} color="black" /></div>
+                            <div className="p-2 mx-5 w-40 h-10 bg-white rounded-xl border-2 flex justify-center items-center border-gray-300">
+                                <select
+                                    value={selectedAgent}
+                                    onChange={(e) => setSelectedAgent(e.target.value)}
+                                    className="w-full h-full bg-transparent outline-none text-sm font-extralight text-gray-600"
+                                >
+                                    <option value="All">Agents</option>
+                                    {agents.map((agent) => (
+                                        <option key={agent.name} value={agent.name}>
+                                            {agent.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </>
                     }
@@ -268,7 +318,7 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
                         {fromAgents ?
                             (
                                 paginatedAgents.length > 0 ? (
-                                 paginatedAgents.map(displayAgent)
+                                    paginatedAgents.map(displayAgent)
                                 )
                                     : (
                                         <div className='h-30 flex justify-center items-center font-light' >
@@ -290,19 +340,19 @@ function Dashboard({ fromAgents, setShowModal ,triggerMeetingUpdate,setTriggerMe
 
                     </div>
                 </div>
-                < Footer  
-                 currentPage={currentPage} 
-                 totalPages={Math.ceil((fromAgents ? filteredAgents.length : filteredMeetings.length) / itemsPerPage)} 
-                 setCurrentPage={setCurrentPage} 
+                < Footer
+                    currentPage={currentPage}
+                    totalPages={Math.ceil((fromAgents ? filteredAgents.length : filteredMeetings.length) / itemsPerPage)}
+                    setCurrentPage={setCurrentPage}
                 />
                 {
                     (!agents || !meetings) &&
                     <>
                         <div className='flex justify-center items-center'><img className="w-86 h-56" src="/processing.svg"></img></div>
                         <div className='flex justify-center items-center font-medium'>{fromAgents ? "Create your first Agent" : "Create your first Meeting"}</div>
-                        </>
+                    </>
                 }
-                
+
             </div>
         </>
 

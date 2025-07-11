@@ -6,20 +6,45 @@ import {
 } from "@stream-io/video-react-sdk";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../utilities/axiosConfig";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Mic, MicOff, Video, VideoOff } from "lucide-react";
 
 
 export default function MeetingLayout({ callId }) {
   const { useCallCallingState, useParticipants } = useCallStateHooks();
+  const [meeting, setMeeting] = useState()
 
   const callingState = useCallCallingState();
   const participants = useParticipants();
   const call = useCall();
   const navigate = useNavigate();
 
-  const [micEnabled, setMicEnabled] = useState(true);
+  const [micEnabled, setMicEnabled] = useState(false);
   const [camEnabled, setCamEnabled] = useState(false);
+
+  const fetchMeetingDetails= async ()=>{
+    let response=  await axiosClient.get(`http://localhost:5000/meetings/${callId}`)
+    setMeeting(response.data.data)
+}
+  const updateMeetingStatus =async () =>{
+    try{
+      await axiosClient.patch('http://localhost:5000/meetings',{
+          meetingId: callId,
+          status: "completed"
+      })
+   
+  }
+  catch(error){
+      alert('something went wrong!')
+  }
+    call.endCall();
+  }
+
+  useEffect(() => {
+    fetchMeetingDetails();
+  
+  }, []);
+
 
   if (callingState === CallingState.LEFT) {
     navigate("/");
@@ -46,24 +71,27 @@ export default function MeetingLayout({ callId }) {
     call.camera.toggle();
     setCamEnabled((prev) => !prev);
   };
+  
 
   return (
     <div className="flex flex-col h-screen bg-white">
       <div className="flex justify-between items-center p-4 bg-[#061B15] text-white">
-        <div className="text-lg font-semibold">Meeting Room</div>
+        <div className="text-lg font-semibold">{meeting?.name}</div>
       </div>
 
       <div className="flex-1 flex items-center justify-center gap-4 p-4">
         {participants.map((participant) => (
           <div
             key={participant.sessionId}
-            className="bg-[#1E2938] w-1/2 h-full rounded flex items-center justify-center"
+            className={`bg-[#1E2938] w-full h-full rounded flex items-center justify-center ${
+              participant.isSpeaking ? "speaking border-2 border-green-500" : "border-transparent"}`}
           >
-            {camEnabled ? (
+            {camEnabled && participant?.roles?.includes('admin') ? (
               <ParticipantView className="flex justify-center items-center" participant={participant} />
             ) : (
               <img height={90} width={90} src={participant.image} />
-            )}
+            )
+            }
 
           </div>
 
@@ -77,14 +105,6 @@ export default function MeetingLayout({ callId }) {
         >
           {micEnabled ? <Mic /> : <MicOff />}
         </button>
-
-        <button
-          onClick={joinAI}
-          className="px-4 py-2 bg-gray-700 text-white cursor-pointer rounded hover:bg-gray-600"
-        >
-          AI
-        </button>
-
         <button
           onClick={toggleCam}
           className="px-4 py-2 bg-gray-700 text-white cursor-pointer rounded hover:bg-gray-600"
@@ -93,7 +113,7 @@ export default function MeetingLayout({ callId }) {
         </button>
 
         <button
-          onClick={() => call.endCall()}
+          onClick={updateMeetingStatus}
           className="px-4 py-2 bg-red-600 text-white rounded cursor-pointer hover:bg-red-700"
         >
           Leave

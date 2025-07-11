@@ -1,14 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CallModal from './CallModal';
 import { ChevronRight, Video, Ban, MessageCircle } from 'lucide-react'
 import { useParams } from 'react-router-dom'
 import BotModal from './BotModal'  // Create this component
 import VideoRoom from './VideoRoom';
-
+import axiosClient from '../utilities/axiosConfig'
 function MeetingDetails() {
     const [showCallModal, setShowCallModal] = useState(false)
     const [showBotModal, setShowBotModal] = useState(false)
+    const [meetingData, setMeetingData] = useState([]);
     const { meetingId } = useParams()
+    const fetchMeetingDetails = async () => {
+        let response = await axiosClient.get(`http://localhost:5000/meetings/${meetingId}`)
+        setMeetingData(response.data.data);
+    }
+
+    useEffect(() => {
+        fetchMeetingDetails();
+
+    }, []);
+
 
     return (
         <>
@@ -22,19 +33,43 @@ function MeetingDetails() {
                 <div className='flex justify-center items-center mt-10'>
                     <img className="w-86 h-60" src="/images/processing.svg" alt="processing" />
                 </div>
-                <div className='flex justify-center items-center text-2xl'>Not Started Yet</div>
-                <div className='font-extralight flex justify-center items-center mt-2 text-gray-500'>
-                    Once you start this meeting, a summary will appear here
-                </div>
+                {meetingData.status === "not_started" && (
+                    <div className='flex justify-center items-center text-2xl'>Not Started Yet</div>
+                )}
+                {meetingData.status === "in_progress" &&
+                    (
+                        <div className='flex justify-center items-center text-2xl'>Meeting In Progress</div>
+                    )
+                }
+                {meetingData.status === "completed" &&
+                    (
+                        <div className='flex justify-center items-center text-2xl'>Meeting Completed</div>
+                    )
+                }
+
                 <div className='flex flex-row gap-5 justify-center items-center mt-8'>
-                    <div className='w-44 h-12 gap-2 bg-[#FFFFFF] flex flex-row justify-center items-center rounded-lg cursor-pointer hover:bg-gray-100'>
-                        <Ban size={20} color='black' />
-                        <div className='font-medium text-s'>Cancel meeting</div>
-                    </div>
-                    <div onClick={() => setShowCallModal(true)} className='w-44 h-12 gap-2 bg-[#3BAC5D] flex flex-row justify-center items-center rounded-lg cursor-pointer hover:bg-green-600'>
+                    {meetingData.status === "not_started" && (
+                        <div className='w-44 h-12 gap-2 bg-[#FFFFFF] flex flex-row justify-center items-center rounded-lg cursor-pointer hover:bg-gray-100'>
+                            <Ban size={20} color='black' />
+                            <div className='font-medium text-s'>Cancel meeting</div>
+                        </div>
+                    )
+                    }
+
+                    <div onClick={() => meetingData.status === "in_progress" ? (window.location.href =  `/call/${meetingId}`) : setShowCallModal(true)} className='w-44 h-12 gap-2 bg-[#3BAC5D] flex flex-row justify-center items-center rounded-lg cursor-pointer hover:bg-green-600'>
                         <Video size={20} color='white' />
-                        <div className='font-medium text-s text-white'>Start meeting</div>
+                        <div className='font-medium text-s text-white cursor-pointer'>
+                            {
+                                meetingData.status === "not_started"
+                                    ? "Start Meeting"
+                                    : meetingData.status === "in_progress"
+                                        ? "Resume Meeting"
+                                        : "Restart Meeting"
+                            }
+                        </div>
                     </div>
+
+
                 </div>
             </div>
 

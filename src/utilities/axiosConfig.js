@@ -25,7 +25,8 @@ axiosClient.interceptors.response.use(
     if (
       error.response &&
       error.response.data &&
-      error.response.data.code === "TOKEN_EXPIRED"
+      (error.response.data.code === "TOKEN_EXPIRED"
+      || error.response.data.code === "TOKEN_INVALID")
     ) {
       // Remove auth cookie
       Cookies.remove("auth");

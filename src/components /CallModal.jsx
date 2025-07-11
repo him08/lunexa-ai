@@ -4,9 +4,20 @@ import { MicOff } from 'lucide-react'
 import { VideoOff } from 'lucide-react'
 import {LogIn} from 'lucide-react'
 import {  useNavigate } from 'react-router-dom'
+import axiosClient from '../utilities/axiosConfig'
 function CallModal({ setShowCallModal,callId }) {
-
-const navigate = useNavigate()
+const joinCall = async () => {
+    try{
+    await axiosClient.patch('http://localhost:5000/meetings',{
+        meetingId: callId,
+        status: "in_progress"
+    })
+    window.location.href = `/call/${callId}`
+}
+catch(error){
+    alert('something went wrong')
+}
+}
     return (
         <>
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
@@ -44,7 +55,7 @@ const navigate = useNavigate()
                         <div className='w-32 h-10 gap-2 bg-[#3BAC5D] flex flex-row justify-center items-center rounded-lg cursor-pointer hover:bg-green-600'>
 
                              <div><LogIn size={20} color='white' /></div> 
-                            <div onClick={()=> navigate(`/call/${callId}`)} className='font-medium text-s text-white'>Join Call</div>
+                            <div onClick={joinCall} className='font-medium text-s text-white'>Join Call</div>
                         </div>
                     </div>
                 </div>

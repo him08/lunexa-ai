@@ -19,12 +19,17 @@
   "description": "",
   "dependencies": {
     "@clerk/backend": "^2.3.0",
-    "@stream-io/node-sdk": "^0.4.24",
-    "@stream-io/openai-realtime-api": "^0.2.0",
+    "@dicebear/collection": "^9.2.3",
+    "@dicebear/core": "^9.2.3",
+    "@stream-io/node-sdk": "^0.4.25",
+    "@stream-io/openai-realtime-api": "^0.3.3",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
-    "mongoose": "^8.16.0"
+    "i": "^0.3.7",
+    "mongoose": "^8.16.0",
+    "ngrok": "^5.0.0-beta.2",
+    "npm": "^11.4.2"
   }
 }

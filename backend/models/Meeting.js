@@ -9,7 +9,14 @@ const meetingSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'agent'
   },
-  userId: String
+  userId: String,
+  status : {
+    type: String,
+    enum: ['not_started', 'in_progress','completed'],
+    default: 'not_started',
+  },
+  transcribed_url : String,
+  recording_url : String 
 });
 
 

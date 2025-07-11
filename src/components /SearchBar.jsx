@@ -18,10 +18,6 @@ function SearchBar({ setShowSideBar, showSideBar }) {
               : <PanelLeft color="black" size={20} />
           }
         </div>
-        <div className='p-2 w-64 h-10 box-border border-2 border-gray-300 shadow-md hover:bg-[#F5F5F5] flex justify-start gap-2 items-center rounded-xl'>
-          <Search size={20} color="black" />
-          <div className='text-black'>Search</div>
-        </div>
       </div>
     </>
   )
