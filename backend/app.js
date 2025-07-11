@@ -67,8 +67,7 @@ async function setupRealtimeClient(realtimeClient) {
   const realtimeClient = await client.video.connectOpenAi({
     call,
     openAiApiKey: process.env.OPEN_AI_API_KEY,
-    agentUserId: agent._id,
-    model : 'gpt-4o-mini-realtime-preview-2024-12-17'
+    agentUserId: agent._id
   });
   // realtimeClient.updateSession({
   //   instructions:
