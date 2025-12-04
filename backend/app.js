@@ -8,8 +8,8 @@ const { verifyToken } = require('@clerk/backend');
 const axios = require('axios');
 const { StreamClient } = require("@stream-io/node-sdk");
 const app=express();
-const  { botttsNeutral, initials } = require("@dicebear/collection");
-const { createAvatar } =  require("@dicebear/core")
+// const  { botttsNeutral, initials } = require("@dicebear/collection");
+// const { createAvatar } =  require("@dicebear/core")
 // FOR CORS POLICY 
 app.use(cors())
 app.use(express.json())
@@ -24,17 +24,17 @@ mongoose.connect(process.env.DATABASE_URL)
   .then(() => console.log('DATABASE Connected!'))
   .catch((error) => console.log(error))
 
-  const generateAvatarUri = ({ seed, variant }) => {
-    let avatar;
+  // const generateAvatarUri = ({ seed, variant }) => {
+  //   let avatar;
   
-    if (variant === "botttsNeutral") {
-      avatar = createAvatar(botttsNeutral, { seed });
-    } else {
-      avatar = createAvatar(initials, { seed, fontWeight: 500, fontSize: 42 });
-    }
+  //   if (variant === "botttsNeutral") {
+  //     avatar = createAvatar(botttsNeutral, { seed });
+  //   } else {
+  //     avatar = createAvatar(initials, { seed, fontWeight: 500, fontSize: 42 });
+  //   }
   
-    return avatar.toDataUri();
-  };
+  //   return avatar.toDataUri();
+  // };
   
 
   app.post('/webhook', async (req,res) => {
@@ -250,7 +250,7 @@ app.post("/join-call", async (req, res) => {
   const user = {
     id,
     name,
-    image: generateAvatarUri({ seed: name, variant: "initials" }),
+    image,
     role: "admin"
   };
   await client.upsertUsers([user])
@@ -287,10 +287,7 @@ await client.upsertUsers([
     id: agent._id,
     name: agent.name,
     role: "admin",
-    image: generateAvatarUri({
-      seed: agent.name,
-      variant: "botttsNeutral",
-    }),
+    image: "https://img.freepik.com/free-psd/cute-3d-robot-waving-hand-cartoon-vector-icon-illustration-people-technology-isolated-flat-vector_138676-10649.jpg?t=st=1764876119~exp=1764879719~hmac=f3f9744f04cee1be1ff77c66210f7dbb4248ae2705e46a58c3535124fecab3dd&w=2000"
   },
 ])
 
