@@ -1,12 +1,48 @@
-# React + Vite
+# Lunexa AI 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Next-generation video conferencing powered by AI: smarter, more productive, and effortlessly organized.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Core Functionality      | AI Capabilities         |
+| ----------------------- | ----------------------- |
+| AI-Powered Video Calls  | Custom Real-time Agents |
+| Smart Meeting Summaries | AI Q&A                  |
+| Meeting Recordings      | OpenAI Integration      |
+| Transcript Search       | Smart Transcripts       |
+
+---
+
+## Technical Stack
+
+| Layer         | Technology                                    |
+| ------------- | --------------------------------------------- |
+| Frontend      | Next.js 16, React 19, Tailwind CSS v4         |
+| UI Components | shadcn/ui                                     |
+| Auth          | Clerk                                         |
+| Real-time     | Stream Video SDK, Stream Chat SDK             |
+| Background    | Inngest (background jobs)                     |                        |
+| DB/ORM        | MongoDB                                       |
+| Package Mgmt  | Npm, or yarn                             |
+| Deploy        | Vercel                                        |
+
+---
+
+
+## API Endpoints
+
+| Endpoint                      | Method | Description                      |
+| ----------------------------- | ------ | -------------------------------- |
+| `/api/auth/sign-in`           | POST   | Login User                       |
+| `/api/auth/sign-up`           | POST   | Register User                    |
+| `/api/meetings`               | GET    | List meetings                    |
+| `/api/meetings`               | POST   | Create meeting                   |
+| `/api/meetings/:id`           | GET    | Get meeting details              |
+| `/api/meetings/:id/summary`   | GET    | Get meeting transcription        |
+| `/api/agents`                 | GET    | Get Agents                       |
+| `/api/agents`                 | POST   | Post Agent                       |
+
+---
