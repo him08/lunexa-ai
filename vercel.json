@@ -1,6 +1,6 @@
 {
     "version": 2,
-    "installCommand": "npm install --legacy-peer-deps",
+    "installCommand": "npm install --legacy-peer-deps && cd backend && npm install --legacy-peer-deps",
     "builds": [
       { "src": "package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
       { "src": "backend/app.js", "use": "@vercel/node" }
