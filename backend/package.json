@@ -23,7 +23,7 @@
     "@dicebear/core": "^9.2.3",
     "@stream-io/node-sdk": "^0.4.25",
     "@stream-io/openai-realtime-api": "^0.3.3",
-    "axios": "^1.10.0",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",

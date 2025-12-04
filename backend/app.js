@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const Agent = require('./models/Agent');
 const Meeting = require('./models/Meeting');
 const { verifyToken } = require('@clerk/backend'); 
-const { default: axiosClient } = require('../src/utilities/axiosConfig');
+const axios = require('axios');
 const { StreamClient } = require("@stream-io/node-sdk");
 const app=express();
 const  { botttsNeutral, initials } = require("@dicebear/collection");
@@ -42,7 +42,6 @@ mongoose.connect(process.env.DATABASE_URL)
    const eventType = event?.type
    try {
    if(eventType === "call.session_started"){
-    console.log("Ishan", eventType)
     const meetingId = event.call?.custom?.meetingId;
 const meeting = await Meeting.findOne({_id:meetingId}).populate('agent').exec()
 const agent = meeting.agent
@@ -69,10 +68,10 @@ async function setupRealtimeClient(realtimeClient) {
     openAiApiKey: process.env.OPEN_AI_API_KEY,
     agentUserId: agent._id
   });
-  // realtimeClient.updateSession({
-  //   instructions:
-  //     agent.instructions
-  // });
+  realtimeClient.updateSession({
+    instructions:
+      agent.instructions
+  });
 
   await setupRealtimeClient(realtimeClient)
 
@@ -83,30 +82,6 @@ async function setupRealtimeClient(realtimeClient) {
     }
 });
   
-
-  // realtimeClient.realtime.on("server.input_audio_buffer.speech_started", () => {
-  //   console.log("🗣️ Speech started");
-  // });
-  
-  // realtimeClient.realtime.on("server.input_audio_buffer.speech_stopped", () => {
-  //   console.log("🔇 Speech stopped");
-  // });
-
-  // realtimeClient.realtime.on("server.response.audio.delta", (e) => {
-  //   console.log("🔊 Audio response:", e.delta);
-  // });
-  
-  // realtimeClient.realtime.on("server.conversation.item.input_audio_transcription.completed", (e) => {
-  //   console.log("📄 Transcribed:", e.input_audio_transcription?.text);
-  // });
-  
-  // realtimeClient.realtime.on("server.response.text.delta", (e) => {
-  //   console.log("💬 Agent says:", e.delta);
-  // });
-  
-  // realtimeClient.realtime.on("server.response.audio.delta", (e) => {
-  //   console.log("🔊 Audio response delta received");
-  // });
   res.status(200).json({ status: "ok" })
 }else if (eventType === "call.session_participant_left") {
   const event = req.body;
@@ -263,18 +238,6 @@ app.delete("/meetings/:id",async(req,res)=>{
     }
 })
 
-// app.get("/stream-token", (req, res) => {
-//   const userId = req.query.userId;
-
-//   if (!userId) {
-//     return res.status(400).json({ error: "userId is required" });
-//   }
-
-//   const token = client.generateUserToken({user_id: userId});
-//   res.json({ token });
-// });
-
-
 app.post("/join-call", async (req, res) => {
 
   const { callId , id, name, image} = req.body;
@@ -294,6 +257,7 @@ app.post("/join-call", async (req, res) => {
   const token = client.generateUserToken({user_id: user.id})
   
 const call = client.video.call("default", callId);
+
 // STREAM SDK >>>
 const streamCall = await call.getOrCreate({
   data:{
@@ -337,13 +301,6 @@ await client.upsertUsers([
   }
 });
 
-// JOINING THE AI AGENT 
-// app.post("/join-ai", async (req, res) => {
-
-// });
-
-
-
 
 
 // CREATE NEW AGENT in database save >>>
@@ -368,7 +325,7 @@ app.post('/generate-response', async (req, res) => {
     const { prompt } = req.body;
   
     try {
-      const response = await axiosClient.post(
+      const response = await axios.post(
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent",
         {
           contents: [{ parts: [{ text: prompt }] }]
