@@ -23,12 +23,12 @@ export default function MeetingLayout({ callId }) {
   const [camEnabled, setCamEnabled] = useState(false);
 
   const fetchMeetingDetails= async ()=>{
-    let response=  await axiosClient.get(`http://localhost:5000/meetings/${callId}`)
+    let response=  await axiosClient.get(`${API_URL}/meetings/${callId}`)
     setMeeting(response.data.data)
 }
   const updateMeetingStatus =async () =>{
     try{
-      await axiosClient.patch('http://localhost:5000/meetings',{
+      await axiosClient.patch(`${API_URL}/meetings`,{
           meetingId: callId,
           status: "completed"
       })
@@ -59,7 +59,7 @@ export default function MeetingLayout({ callId }) {
   }
 
   const joinAI = async () => {
-    await axiosClient.post(`http://localhost:5000/join-ai`, { callId });
+    await axiosClient.post(`${API_URL}/join-ai`, { callId });
   };
 
   const toggleMic = () => {

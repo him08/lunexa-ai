@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosClient from '../utilities/axiosConfig'
 
 function Modal({ fromAgents, setShowModal,setSelected,setTriggerMeetingUpdate,setTriggerAgentUpdate}) {
+    const API_URL = import.meta.env.VITE_API_URL
 
     const navigate = useNavigate();
     // MEETINGS
@@ -26,7 +27,7 @@ function Modal({ fromAgents, setShowModal,setSelected,setTriggerMeetingUpdate,se
   
     const[changeAgentAvatar,setChangeAgentAvatar]=useState();
     const getAgents = async () => {
-        let response = await axiosClient.get('http://localhost:5000/agents');
+        let response = await axiosClient.get(`${API_URL}/agents`);
         let names = response?.data?.data?.map(agent => agent.name);
         setAgents(names);
         setFilteredAgents(names);
@@ -67,7 +68,7 @@ function Modal({ fromAgents, setShowModal,setSelected,setTriggerMeetingUpdate,se
                 toast.error('Name and instructions are required');
                 return;
             }
-            await axiosClient.post('http://localhost:5000/agents', {
+            await axiosClient.post(`${API_URL}/agents`, {
                 avatar:changeAgentAvatar,
                 name: agentName,
                 instructions: agentInstructions
@@ -78,7 +79,7 @@ function Modal({ fromAgents, setShowModal,setSelected,setTriggerMeetingUpdate,se
             setTriggerAgentUpdate(true)
       
         } else {
-            await axiosClient.post('http://localhost:5000/meetings', {
+            await axiosClient.post(`${API_URL}meetings`, {
                 name: meetingName,
                 agentName: meetingAgent
             });

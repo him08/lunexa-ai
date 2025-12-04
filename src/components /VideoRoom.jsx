@@ -18,6 +18,7 @@ import { HashLoader } from "react-spinners";
 
   
   export default function VideoRoom() {
+    const API_URL = import.meta.env.VITE_API_URL
 
     const { callId } = useParams()
     const { user } = useUser();
@@ -28,7 +29,7 @@ import { HashLoader } from "react-spinners";
     const [call, setCall]  = useState(null);
     const setupCall = async () => {
       if (!user) return;
-      const response = await axiosClient.post(`http://localhost:5000/join-call`, {
+      const response = await axiosClient.post(`${API_URL}/join-call`, {
         callId,
         id: user.id,
         name: user.firstName,

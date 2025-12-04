@@ -54,6 +54,7 @@ function Dashboard({ fromAgents, setShowModal, triggerMeetingUpdate, setTriggerM
     const [statusFilter, setStatusFilter] = useState("All");
     const statuses = ["All", "not_started", "in_progress", "completed"];
     const [selectedAgent, setSelectedAgent] = useState("All");
+    const API_URL = import.meta.env.VITE_API_URL;
     // const fetchToken = async () => {
     //     const token = await getToken();
     //     const decoded = jwtDecode(token);
@@ -67,7 +68,7 @@ function Dashboard({ fromAgents, setShowModal, triggerMeetingUpdate, setTriggerM
 
     const deleteMeeting = async (id) => {
         try {
-            await axiosClient.delete(`http://localhost:5000/meetings/${id}`);
+            await axiosClient.delete(`${API_URL}/meetings/${id}`);
             // After successful deletion, refresh the meetings
             getMeetings();
         } catch (error) {
@@ -199,7 +200,7 @@ function Dashboard({ fromAgents, setShowModal, triggerMeetingUpdate, setTriggerM
     }
 
     const getMeetings = async () => {
-        let response = await axiosClient.get('http://localhost:5000/meetings')
+        let response = await axiosClient.get(`${API_URL}/meetings`)
         let meetingsData = response?.data?.data
         console.log(meetingsData)
         let filteredMeetings = meetingsData.map(mapMeet)
@@ -207,7 +208,7 @@ function Dashboard({ fromAgents, setShowModal, triggerMeetingUpdate, setTriggerM
     }
 
     const getAgents = async () => {
-        let response = await axiosClient.get('http://localhost:5000/agents')
+        let response = await axiosClient.get(`${API_URL}/agents`)
         let agentData = response?.data?.data
         let filteredAgentData = agentData.map(mapFunc)
 

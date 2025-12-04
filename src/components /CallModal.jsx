@@ -6,9 +6,10 @@ import {LogIn} from 'lucide-react'
 import {  useNavigate } from 'react-router-dom'
 import axiosClient from '../utilities/axiosConfig'
 function CallModal({ setShowCallModal,callId }) {
+    const API_URL = import.meta.env.VITE_API_URL
 const joinCall = async () => {
     try{
-    await axiosClient.patch('http://localhost:5000/meetings',{
+    await axiosClient.patch(`${API_URL}/meetings`,{
         meetingId: callId,
         status: "in_progress"
     })

@@ -22,7 +22,7 @@ const client = new StreamClient(apiKey, apiSecret);
 
 mongoose.connect(process.env.DATABASE_URL)
   .then(() => console.log('DATABASE Connected!'))
-  .catch(() => process.exit(1))
+  .catch((error) => console.log(error))
 
   const generateAvatarUri = ({ seed, variant }) => {
     let avatar;
@@ -387,10 +387,8 @@ app.post('/generate-response', async (req, res) => {
     }
   });
 
-app.listen(5000,()=>{
-    console.log("SERVER STARTED");
-})
-
+  const serverless = require('serverless-http');
+  module.exports = serverless(app);
 
 
 

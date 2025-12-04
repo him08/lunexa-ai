@@ -13,10 +13,11 @@ function MeetingDetails() {
     const [filteredTranscript, setFilteredTranscript] = useState([]);
     const [activeTab, setActiveTab] = useState("transcript");
     const { meetingId } = useParams();
+    const API_URL = import.meta.env.VITE_API_URL
 
     const fetchMeetingDetails = async () => {
         try {
-            const response = await axiosClient.get(`http://localhost:5000/meetings/${meetingId}`);
+            const response = await axiosClient.get(`API_URL/meetings/${meetingId}`);
             const data = response.data.data;
             setMeetingData(data);
 

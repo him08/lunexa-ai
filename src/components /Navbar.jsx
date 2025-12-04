@@ -60,14 +60,19 @@ function Navbar({setSelected,selected,showSideBar,setShowSideBar}) {
             <div><Rocket color="white" size={15} /></div>
             <div className='font-normal text-lg'>Free Trial</div>
           </div>
-          <div className='  font-normal text-sm'>
-            0/1 Agents
+          {/* <div className='  font-normal text-sm'>
+            0/5 Agents
           </div>
           <div className=' h-2 bg-[#163F29] rounded-xl'></div>
           <div className=' font-normal text-sm'>
-            0/3 Meetings
-          </div>
-          <div className=' h-2 bg-[#163F29] rounded-xl'></div>
+            0/10 Meetings
+          </div> */}
+     <div className='h-2 w-full bg-[#163F29] rounded-xl overflow-hidden'>
+  <div 
+    className='h-full bg-emerald-600 rounded-xl' 
+    style={{ width: '50%' }}
+  ></div>
+</div>
           {/* UPGRADE BUTTON */}
           <div className="mt-4 -mx-6 -mb-6 hover:bg-[#2B3C38] transition-colors duration-200 cursor-pointer rounded-b-xl">
             <div className="h-[1px] bg-[#2B3C38]"></div>

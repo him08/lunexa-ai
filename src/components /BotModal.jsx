@@ -8,6 +8,7 @@ function BotModal({ setShowBotModal }) {
     const [userInput, setUserInput] = useState("");
     const [selectedAgent, setSelectedAgent] = useState("");
     const [agents, setAgents] = useState([]);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     // as soon as the user selects the agent >>>
 
@@ -20,10 +21,11 @@ function BotModal({ setShowBotModal }) {
             { from: "bot", text: `Hey, you selected ${e.target.value}` }
         ]);
 
+        const API_URL = import.meta.env.VITE_API_URL;
         const foundAgent = agents.find(agent => agent.name === agentName)
         const instructions = foundAgent?.instructions
         const prompt = `Act like agent ${agentName} your instructions are ${instructions} you have to stick only to these instructions and respond according to them, now please answer all my questions based ont this."}`
-        let response = await axiosClient.post('http://localhost:5000/generate-response', {
+        let response = await axiosClient.post(`${API_URL}/generate-response`, {
             prompt: prompt
         })
         console.log("ishan", response?.data?.reply)
@@ -64,7 +66,7 @@ function BotModal({ setShowBotModal }) {
         ${chatHistory} Here is the last question of user 
         "${userMessage}". Answer it accordingly .`
         console.log(prompt)
-            const response = await axiosClient.post("http://localhost:5000/generate-response", {
+            const response = await axiosClient.post(`${API_URL}/generate-response`, {
                 prompt: prompt
             })
             const botReply = response?.data?.reply || "Sorry, I couldn't process that.";
@@ -79,7 +81,7 @@ function BotModal({ setShowBotModal }) {
     };
 
     const getAgents = async () => {
-        let response = await axiosClient.get('http://localhost:5000/agents')
+        let response = await axiosClient.get(`${API_URL}/agents`)
         let agentData = response?.data?.data
         let filteredAgentData = agentData.map(mapFunc)
 
