@@ -79,7 +79,7 @@ function Modal({ fromAgents, setShowModal,setSelected,setTriggerMeetingUpdate,se
             setTriggerAgentUpdate(true)
       
         } else {
-            await axiosClient.post(`${API_URL}meetings`, {
+            await axiosClient.post(`${API_URL}/meetings`, {
                 name: meetingName,
                 agentName: meetingAgent
             });

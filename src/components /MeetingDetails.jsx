@@ -17,7 +17,7 @@ function MeetingDetails() {
 
     const fetchMeetingDetails = async () => {
         try {
-            const response = await axiosClient.get(`API_URL/meetings/${meetingId}`);
+            const response = await axiosClient.get(`${API_URL}/meetings/${meetingId}`);
             const data = response.data.data;
             setMeetingData(data);
 
